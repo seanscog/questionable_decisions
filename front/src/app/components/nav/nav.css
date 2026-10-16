@@ -1,0 +1,15 @@
+nav {
+    display: flex;
+    background: #aaa;
+    justify-content: space-between;
+    padding:0.5em;
+  }
+nav>.left {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+.link-active {
+  background: #b85050;
+  color: #ffffff;
+}

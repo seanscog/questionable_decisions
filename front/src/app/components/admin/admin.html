@@ -1,0 +1,18 @@
+<h1>With Great Power Comes Great Responsibility</h1>
+<h3><i>At least, supposedly</i></h3>
+<table>
+  <thead>
+  <tr>
+    <th>username</th>
+    <th>Name</th>
+  </tr>
+  </thead>
+  <tbody>
+  @for(user of users; track user.id){
+  <tr>
+    <td>{{user.username}}</td>
+    <td>{{user?.first_name ?? ""}} {{user?.last_name ?? ""}}</td>
+  </tr>
+  }
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+button[type=submit] {
+  background-color: #4444dd;
+  color: #eeeeee;
+  border-radius: 5px;
+}
+button[type=submit]:hover {
+  background-color: #2222aa;
+  color: #eeeeee;
+  border-radius: 5px;
+}

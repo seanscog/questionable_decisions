@@ -1,0 +1,25 @@
+<nav>
+  <button (click)="setTab('login')" [disabled]="tab() ==='login'">login</button>
+  <button (click)="setTab('register')" [disabled]="tab() ==='register'">register</button>
+</nav>
+@if(tab() === "login") {
+<h1>Login</h1>
+} @else {
+<h1>Register</h1>
+<form>
+<div>
+<label for="username">Username: </label>
+<input id=username [formField]="registerForm.username"/>
+</div>
+<div>
+<label for="password">Password: </label>
+<input id=password [formField]="registerForm.password"/>
+</div>
+<div>
+<label for="confirmPassword">Confirm Password: </label>
+<input id=confirmPassword [formField]="registerForm.confirmPassword"/>
+</div>
+<button type="submit">Register</button>
+</form>
+}
+
