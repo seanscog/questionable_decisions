@@ -1,25 +1,51 @@
+<ng-template #validationMessage let-field="field">
+  @if(field.touched() && field.invalid()) {
+  <ul class="error-list">
+    @for (error of field.errors(); track error) {
+    <li>{{error.kind}}@if(error.message){: {{ error.message }}}</li>
+    }
+  </ul>
+  }
+</ng-template>
 <nav>
   <button (click)="setTab('login')" [disabled]="tab() ==='login'">login</button>
   <button (click)="setTab('register')" [disabled]="tab() ==='register'">register</button>
 </nav>
 @if(tab() === "login") {
 <h1>Login</h1>
+<form [formRoot]="loginForm">
+  <label>
+    Username:
+    <input [formField]="loginForm.username" />
+  </label>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: loginForm.username()}" />
+  <label>
+    Password:
+    <input type="password" [formField]="loginForm.password" />
+  </label>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: loginForm.password()}" />
+  <button type="submit" [disabled]="!loginForm().dirty() || loginForm().invalid()">login</button>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: loginForm()}" />
+</form>
 } @else {
 <h1>Register</h1>
-<form>
-<div>
-<label for="username">Username: </label>
-<input id=username [formField]="registerForm.username"/>
-</div>
-<div>
-<label for="password">Password: </label>
-<input id=password [formField]="registerForm.password"/>
-</div>
-<div>
-<label for="confirmPassword">Confirm Password: </label>
-<input id=confirmPassword [formField]="registerForm.confirmPassword"/>
-</div>
-<button type="submit">Register</button>
+<form [formRoot]="registerForm">
+  <label>
+    Username:
+    <input [formField]="registerForm.username" />
+  </label>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.username()}" />
+  <label>
+    Password:
+    <input type="password" [formField]="registerForm.password" />
+  </label>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.password()}" />
+  <label>
+    Confirm Password:
+    <input type="password" [formField]="registerForm.confirmPassword" />
+  </label>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.confirmPassword()}" />
+  <button type="submit" [disabled]="!registerForm().dirty() || registerForm().invalid()">Register</button>
+  <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm()}" />
 </form>
 }
-

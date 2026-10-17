@@ -1,10 +1,12 @@
 <nav>
   <div class="left">
     @for(link of links; track $index){
-    <a routerLink="{{link.path}}" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}">{{link.display}}</a>
+    <a routerLink="{{link.path}}" routerLinkActive="link-active"
+      [routerLinkActiveOptions]="{exact: true}">{{link.display}}</a>
     }
   </div>
-  @if(false){
+  @if(user()){
+  <span>👤 <a routerLink="/profile" routerLinkActive="link-active">{{user()?.username}}</a></span>
   }@else{
   <a routerLink="/login" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}">Log in</a>
   }

@@ -27,8 +27,8 @@ public class UserHandler {
 
         Mono<User> user = request.bodyToMono(User.class);
         // TODO: hash password
-        user.map(userRepository::save);
+        user.log().map(userRepository::save);
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(userRepository.findAll().log(), User.class);
+                .bodyValue("{ok: true}");
     }
 }

@@ -1,3 +1,26 @@
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+/* https://angular.dev/guide/forms/signals/validation */
+.error-list {
+  color: red;
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0 0;
+  padding-left: 0;
+  list-style-position: inside;
+}
+.error-list li {
+  margin: 0;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
 button[type=submit] {
   background-color: #4444dd;
   color: #eeeeee;
@@ -6,5 +29,8 @@ button[type=submit] {
 button[type=submit]:hover {
   background-color: #2222aa;
   color: #eeeeee;
-  border-radius: 5px;
+}
+button[type=submit]:disabled {
+  background-color: #666666;
+  color: #eeeeee;
 }
