@@ -15,5 +15,5 @@ interface Link {
 export class Nav {
   userService = inject(UserService)
   user = this.userService.user;
-  links:Link[] = [{display: "Home", path:"/"}, {display: "About", path:"/about"}, {display: "Admin", path:"/admin"}]
+  links:Link[] = [{display: "Home", path:"/"}, {display: "About", path:"/about"}, {display: "Admin", path:"/admin"}, {display: "New Form", path: "/form/new"}]
 }

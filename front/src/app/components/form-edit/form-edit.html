@@ -1,0 +1,29 @@
+<form [formGroup]="questionable" (ngSubmit)="onSubmit()">
+    <h2>{{questionable.controls.title.value}}</h2>
+    <!-- <div class="form-group">
+        <label for="name">Attendee Name</label>
+        <input id="name" type="text" placeholder="Your full name" formControlName="name" />
+
+        @if (questionable.get('name')?.invalid && questionable.get('name')?.touched) {
+        <div class="error-message">Name is required.</div>
+        }
+    </div> -->
+    <div class="form-group">
+        <label>({{questionable.controls.questions.controls.length}}) Questions</label>
+        <div>
+            @for(control of questionable.controls.questions.controls;track control){
+            <p>{{control.value}} <button type="button" (click)=[editQuestion($index)] title="edit">✏️</button></p>
+            }
+        </div>
+        <button type="button" (click)='addQuestion()'>Add Question</button>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-group">
+        <!-- TODO 23: Add [disabled]="!eventForm.valid" to the submit button -->
+        <button type="submit" [disabled]="(!questionable.valid || questionable.pristine)">Save</button>
+
+        <!-- TODO 24: Add a reset button (type="button") that calls onReset() -->
+        <button type="button" class="btn-reset" (click)="onDiscard()">Discard</button>
+    </div>
+</form>

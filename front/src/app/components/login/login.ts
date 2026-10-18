@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { form, FormRoot, FormField, required, validate } from '@angular/forms/signals';
 import { UserService } from '../../services/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class Login {
     this.tab.set(tab);
   }
   userService = inject(UserService);
+  private readonly router = inject(Router);
 
   loginModel = signal({
     username: '',
@@ -34,13 +36,17 @@ export class Login {
           let result;
           try {
             result = await this.userService.login({
+              id: 0,
               username: formData.username,
               password: formData.password,
             });
-          } catch {
-            return { kind: 'serverError', message: 'Registration failed, could not connect' };
+          } catch (err: any) {
+            return { kind: 'serverError', message: err.message ?? '' };
           }
-          if (result.ok) return;
+          if (result.ok) {
+            await this.router.navigate(['profile']);
+            return;
+          }
           return {
             kind: 'serverError',
             message: result.message ?? 'Registration failed, try again later',
@@ -82,13 +88,18 @@ export class Login {
           let result;
           try {
             result = await this.userService.register({
+              id: 0,
               username: formData.username,
               password: formData.password,
             });
-          } catch {
-            return { kind: 'serverError', message: 'Registration failed, could not connect' };
+          } catch (err: any) {
+            console.log(err);
+            return { kind: 'serverError', message: err?.message ?? '' };
           }
-          if (result.ok) return;
+          if (result.ok) {
+            await this.router.navigate(['profile']);
+            return;
+          }
           return {
             kind: 'serverError',
             message: result.message ?? 'Registration failed, try again later',

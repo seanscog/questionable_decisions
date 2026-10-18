@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment.production';
 import { firstValueFrom, tap } from 'rxjs';
 
 export interface User {
+  id: number;
   username: string;
   password?: string;
   first_name?: string;
@@ -11,6 +12,7 @@ export interface User {
 }
 interface RegisterResponse {
   ok: boolean;
+  id?: number;
   message?: string;
 }
 @Injectable({
@@ -23,16 +25,16 @@ export class UserService {
     return firstValueFrom(
       this.http.post<RegisterResponse>(environment.apiUrl + '/login', user).pipe(
         tap((r) => {
-          if (r.ok) this.user.set({ username: user.username });
+          if (r.ok) this.user.set({ id: r.id!, username: user.username });
         }),
       ),
     );
   }
-  async register(newUser: User): Promise<RegisterResponse> {
+  async register(user: User): Promise<RegisterResponse> {
     return firstValueFrom(
-      this.http.post<RegisterResponse>(environment.apiUrl + '/user', newUser).pipe(
+      this.http.post<RegisterResponse>(environment.apiUrl + '/user', user).pipe(
         tap((r) => {
-          if (r.ok) this.user.set({ username: newUser.username });
+          if (r.ok) this.user.set({ id: r.id!, username: user.username });
         }),
       ),
     );

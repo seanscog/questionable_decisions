@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @Configuration
 public class UserHandler {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     public UserHandler(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -24,11 +24,17 @@ public class UserHandler {
                 .body(userRepository.findAll().log(), User.class);
     }
     public Mono<ServerResponse> addUser(@NonNull ServerRequest request) {
-
         Mono<User> user = request.bodyToMono(User.class);
         // TODO: hash password
-        user.log().map(userRepository::save);
-        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-                .bodyValue("{ok: true}");
+        return user.log().flatMap(userRepository::save).flatMap(u->ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(String.format("{\"ok\": true, \"id\": %d}", u.id())));
+    }
+
+    public Mono<ServerResponse> login(@NonNull ServerRequest request) {
+        Mono<User> user = request.bodyToMono(User.class);
+
+        // TODO: compare hashed password
+        return user.log().flatMap(u->userRepository.findByUsername(u.username()))
+                .flatMap(u->ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(String.format("{\"ok\": true, \"id\": %d}", u.id())))
+                .switchIfEmpty(ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue("{\"ok\": true, \"message\": \"user not found\"}"));
     }
 }
