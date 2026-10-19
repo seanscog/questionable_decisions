@@ -1,0 +1,7 @@
+button[title="edit"]{
+    border: none;
+    background-color: transparent;
+}
+button[title="edit"]:hover{
+    background-color: #888888;
+}

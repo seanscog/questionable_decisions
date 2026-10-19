@@ -1,29 +1,63 @@
 <form [formGroup]="questionable" (ngSubmit)="onSubmit()">
-    <h2>{{questionable.controls.title.value}}</h2>
-    <!-- <div class="form-group">
-        <label for="name">Attendee Name</label>
-        <input id="name" type="text" placeholder="Your full name" formControlName="name" />
+    @if(editingElement() == "title"){
+    <input type="text" placeholder="Form Title" formControlName="title" (blur)=[editingElement.set(null)] />
+    @if (questionable.get('title')?.invalid && questionable.get('title')?.touched) {
+    <div class="error-message">Name is required.</div>
+    }
+    } @else {
+    <h2>{{questionable.controls.title.value}}
+        <button type="button" (click)="editingElement.set('title')" title="edit">✏️</button>
+    </h2>
+    }
 
-        @if (questionable.get('name')?.invalid && questionable.get('name')?.touched) {
-        <div class="error-message">Name is required.</div>
-        }
-    </div> -->
     <div class="form-group">
-        <label>({{questionable.controls.questions.controls.length}}) Questions</label>
-        <div>
-            @for(control of questionable.controls.questions.controls;track control){
-            <p>{{control.value}} <button type="button" (click)=[editQuestion($index)] title="edit">✏️</button></p>
+        <span>({{questions.controls.length}}) Questions</span>
+        <div formArrayName="questions">
+            @for(question of questions.controls;track question){
+            <div [formGroupName]="$index">
+                @if(editingElement() === $index){
+                <div (focusout)="onFocusout($event)">
+                    <select placeholder="Form Title" formControlName="control_type">
+                        <option value="none">display</option>
+                        <option value="text">text</option>
+                        <option value="number">number</option>
+                        <option value="bullets">bullets</option>
+                    </select>
+                    <label>
+                        <input type="text" formControlName="label" />
+                    </label>
+                    @switch(question.get('control_type')!.value){
+                    @case('none') {}
+                    @case('text') {
+                    <input type="text" disabled />
+                    }
+                    <!-- @default never; -->
+                    }
+                    @if (question.get('control_type')?.invalid && question.get('contro_tType')?.touched) {
+                    <div class="error-message">Name is required.</div>
+                    }
+                </div>
+                } @else {
+                <!-- Render preview -->
+                <label>{{question.get('label')!.value}}
+                    @switch(question.get('control_type')!.value){
+                    @case('none') {}
+                    @case('text') {
+                    <input type="text" disabled />
+                    }
+                    <!-- @default never; -->
+                    }
+                    <button type="button" (click)="editingElement.set($index)" title="edit">✏️</button>
+                </label>
+                }
+            </div>
             }
         </div>
         <button type="button" (click)='addQuestion()'>Add Question</button>
     </div>
 
-    <!-- Buttons -->
     <div class="button-group">
-        <!-- TODO 23: Add [disabled]="!eventForm.valid" to the submit button -->
         <button type="submit" [disabled]="(!questionable.valid || questionable.pristine)">Save</button>
-
-        <!-- TODO 24: Add a reset button (type="button") that calls onReset() -->
         <button type="button" class="btn-reset" (click)="onDiscard()">Discard</button>
     </div>
 </form>

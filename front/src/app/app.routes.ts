@@ -4,6 +4,9 @@ import { Admin } from './components/admin/admin';
 import { Login } from './components/login/login';
 import { NotFound } from './components/not-found/not-found';
 import { FormEdit } from './components/form-edit/form-edit';
+import { Questionable, schemaResolver } from './components/questionable/questionable';
+import { Profile } from './components/profile/profile';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   {
@@ -17,6 +20,12 @@ export const routes: Routes = [
     component: Admin,
   },
   {
+    path: 'profile',
+    pathMatch: 'full',
+    component: Profile,
+    canActivate: [authGuard],
+  },
+  {
     path: 'login',
     pathMatch: 'full',
     component: Login,
@@ -25,6 +34,14 @@ export const routes: Routes = [
     path: 'form/new',
     pathMatch: 'full',
     component: FormEdit,
+  },
+  {
+    path: 'form/:id',
+    pathMatch: 'full',
+    component: Questionable,
+    resolve: {
+      schema: schemaResolver,
+    },
   },
   {
     path: '**',
