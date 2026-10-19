@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { QuestionableService } from '../../services/questionable';
-import { Question, QuestionableSchema } from '../../questionable-schema';
+import { controlTypes, Question, QuestionableSchema } from '../../questionable-schema';
 
 @Component({
   selector: 'app-form-edit',
@@ -15,6 +15,7 @@ export class FormEdit {
   private readonly router = inject(Router);
   private readonly questionableService = inject(QuestionableService);
   editingElement = signal<string | number | null>(null);
+  controlTypes = controlTypes;
 
   readonly questionable = this.fb.group({
     title: ['Form', Validators.required],
@@ -30,16 +31,16 @@ export class FormEdit {
   onSubmit(): void {
     if (this.questionable.valid) {
       let num = 0;
+      let value = this.questionable.getRawValue();
       const schema: QuestionableSchema = {
-        id: 0,
-        title: this.questionable.value.title ?? 'You Forgot to Provide a Title Idiot',
-        fields: this.questionable.value.questions!.map((_q: any, i): Question => {
+        userId: 0,
+        title: value.title ?? 'You Forgot to Provide a Title Idiot',
+        fields: value.questions!.map((_q: any, i): Question => {
           const q = _q as Question;
-          console.log(q);
           return {
             id: 0,
             ordinal: i,
-            displayNumber: (q as Question).controlType == 'none' ? 0 : num++,
+            displayNumber: (q as Question).controlType == 'display' ? 0 : num++,
             controlType: q.controlType,
             label: q.label,
             formPage: 0,
@@ -47,8 +48,11 @@ export class FormEdit {
           };
         }),
       };
-      this.questionableService.postQuestionableSchema(schema);
-      console.log('Questionable Created', this.questionable.value);
+      console.log(schema);
+
+      this.questionableService.postQuestionableSchema(schema).then(() => {
+        this.router.navigate(['profile']);
+      });
     } else {
       this.questionable.markAllAsTouched();
     }
@@ -64,7 +68,7 @@ export class FormEdit {
   addQuestion() {
     this.questions.push(
       this.fb.group({
-        control_type: ['none', Validators.required],
+        controlType: ['none', Validators.required],
         label: [`Question ${this.questions.length}`, Validators.required],
         options: [this.fb.array([])],
       }),

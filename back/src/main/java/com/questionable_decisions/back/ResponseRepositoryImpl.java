@@ -38,6 +38,7 @@ public class ResponseRepositoryImpl implements ResponseRepository {
             new Response(
                 null,
                 response.formId(),
+                response.userId(),
                 LocalDateTime.now(),
                 null
             );
@@ -74,8 +75,9 @@ public class ResponseRepositoryImpl implements ResponseRepository {
             .map(list ->
                 new Response(
                     response.id(),
+                    response.userId(),
                     response.formId(),
-                    response.submitted_at(),
+                    response.submittedAt(),
                     list
                 ));
     }

@@ -1,0 +1,32 @@
+<section class="responses">
+    <h2>{{ schema().title }} Responses</h2>
+
+    @if (responses().length) {
+    <table class="responses-table">
+        <thead>
+            <tr>
+                <th scope="col">User</th>
+                <th scope="col">Date</th>
+                @for (field of schema().fields; track field.id) {
+                <th scope="col">{{ field.label }}</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (response of responses(); track $index) {
+            <tr>
+                <td>{{'unknown'}}</td>
+                <td>{{ response.submittedAt | date:'short'}}</td>
+                @for (field of schema().fields; track field.id) {
+                <td>
+                    {{ response.values.find((value) => value.fieldId === field.id)?.val || '-' }}
+                </td>
+                }
+            </tr>
+            }
+        </tbody>
+    </table>
+    } @else {
+    <p>No responses yet.</p>
+    }
+</section>

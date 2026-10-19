@@ -5,4 +5,13 @@
         <small class="adendum"><i>&nbsp;*And also, how did I end up here?</i> or <i>How is this my life now?</i></small>
     </p>
     <p>We can help you get the answers to any of those questions with our easy-to-create Questionable forms.</p>
+    <h1>Example</h1>
+    <div class="example-responses">
+        @if (ready()) {
+        <app-questionable [schema]="schema!"></app-questionable>
+        <app-responses [schema]="schema" [responses]="responses"></app-responses>
+        } @else {
+        <p>Could not load demo</p>
+        }
+    </div>
 </div>

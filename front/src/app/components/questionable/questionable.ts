@@ -2,7 +2,6 @@ import { Component, inject, input, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRouteSnapshot, ResolveFn, Router, RouterStateSnapshot } from '@angular/router';
 import { QuestionableSchema } from '../../questionable-schema';
-import { environment } from '../../../environments/environment.production';
 import { QuestionableService } from '../../services/questionable';
 
 export const schemaResolver: ResolveFn<QuestionableSchema> = (
@@ -11,7 +10,7 @@ export const schemaResolver: ResolveFn<QuestionableSchema> = (
 ) => {
   const questionableService = inject(QuestionableService);
   const formId = route.paramMap.get('id')!;
-  return questionableService.getQuestionable(formId);
+  return questionableService.getQuestionable(Number(formId));
 };
 
 @Component({
@@ -24,43 +23,25 @@ export class Questionable {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly questionableService = inject(QuestionableService);
-  id = input.required<string>();
   schema = input.required<QuestionableSchema>();
-  editingElement = signal<string | number | null>(null);
-
-  readonly questionable = this.fb.group({
-    title: ['Form', Validators.required],
-    questions: this.fb.array([]),
-  });
-  onFocusout(event: FocusEvent) {
-    const current: any = event.currentTarget;
-    if (!current.contains(event.relatedTarget)) {
-      this.editingElement.set(null);
-    }
+  form: FormArray = this.fb.array([]);
+  ngOnInit() {
+    console.log(this.schema());
+    this.form = this.fb.array(this.schema().fields.map((f) => this.fb.control(f)));
   }
 
   onSubmit(): void {
-    if (this.questionable.valid) {
-      this.questionableService.postResponse(this.id(), [{}]);
-      console.log('Questionable Submitted', this.questionable.value);
+    if (this.form.valid) {
+      console.log('Questionable Submitted', this.form.value);
+      this.questionableService.submitResponse(
+        this.schema()?.id!,
+        this.schema().fields.map((f, i) => ({
+          fieldId: f.id,
+          val: this.form.value[i],
+        })),
+      );
     } else {
-      this.questionable.markAllAsTouched();
+      this.form.markAllAsTouched();
     }
-  }
-  get questions(): FormArray {
-    return this.questionable.get('questions') as FormArray;
-  }
-
-  onDiscard(): void {
-    this.questionable.reset();
-    this.router.navigate(['']);
-  }
-  addQuestion() {
-    this.questions.push(
-      this.fb.group({
-        controlType: ['none', Validators.required],
-        label: [`Question ${this.questions.length}`, Validators.required],
-      }),
-    );
   }
 }

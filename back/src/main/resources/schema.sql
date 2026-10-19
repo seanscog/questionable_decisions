@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS customer (
     first_name VARCHAR,
     last_name VARCHAR
 );
-INSERT INTO customer (username)
-VALUES ('anonymous');
+INSERT INTO customer (username, password, first_name, last_name)
+VALUES ('scott', 'password', 'Scott', 'Burman');
 
 CREATE TABLE IF NOT EXISTS form (
     id SERIAL PRIMARY KEY,
@@ -45,6 +45,7 @@ VALUES
 CREATE TABLE IF NOT EXISTS response (
     id SERIAL PRIMARY KEY,
     form_id INTEGER NOT NULL REFERENCES form(id),
+    customer_id INTEGER,
     submitted_at TIMESTAMP NOT NULL
 );
 

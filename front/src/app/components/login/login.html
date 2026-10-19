@@ -31,17 +31,26 @@
 <h1>Register</h1>
 <form [formRoot]="registerForm">
   <label>
-    Username:
+    Username*:
     <input [formField]="registerForm.username" />
   </label>
   <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.username()}" />
+
   <label>
-    Password:
+    First Name:
+    <input type="password" [formField]="registerForm.firstName" />
+  </label>
+  <label>
+    Last Name:
+    <input type="password" [formField]="registerForm.lastName" />
+  </label>
+  <label>
+    Password*:
     <input type="password" [formField]="registerForm.password" />
   </label>
   <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.password()}" />
   <label>
-    Confirm Password:
+    Confirm Password*:
     <input type="password" [formField]="registerForm.confirmPassword" />
   </label>
   <ng-container *ngTemplateOutlet="validationMessage; context:{field: registerForm.confirmPassword()}" />

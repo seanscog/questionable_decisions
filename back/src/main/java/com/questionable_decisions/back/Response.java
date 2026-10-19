@@ -12,7 +12,10 @@ public record Response(
     Integer id,
     @Column("FORM_ID")
     Integer formId,
-    LocalDateTime submitted_at,
+    @Column("CUSTOMER_ID")
+    Integer userId,
+    @Column("SUBMITTED_AT")
+    LocalDateTime submittedAt,
     @Transient
     List<ResponseValue> values
 ) {

@@ -1,46 +1,39 @@
-// export class Question<T> {
-//   value: T | undefined;
-//   key: string;
-//   label: string;
-//   required: boolean;
-//   ordinal: number;
-//   controlType: string;
-//   type: string;
-//   options: { key: string; value: string }[];
-//   constructor(
-//     options: {
-//       value?: T;
-//       key?: string;
-//       label?: string;
-//       required?: boolean;
-//       ordinal?: number;
-//       controlType?: string;
-//       type?: string;
-//       options?: { key: string; value: string }[];
-//     } = {},
-//   ) {
-//     this.value = options.value;
-//     this.key = options.key || '';
-//     this.label = options.label || '';
-//     this.required = !!options.required;
-//     this.ordinal = options.ordinal === undefined ? 1 : options.ordinal;
-//     this.controlType = options.controlType || '';
-//     this.type = options.type || '';
-//     this.options = options.options || [];
-//   }
-// }
+export type Option = {
+  id: number;
+  ordinal: number;
+  label: string;
+  fieldId: number;
+};
+
+export const controlTypes = ['display', 'text', 'number', 'radio'] as const;
+export type ControlType = (typeof controlTypes)[number];
 export type Question = {
   id: number;
   ordinal: number;
   displayNumber: number;
-  controlType: string;
+  controlType: ControlType;
   label: string;
   formPage: number;
-  options: string[];
+  options: Option[];
 };
 
 export type QuestionableSchema = {
-  id: number;
+  id?: number;
+  userId: number;
   title: string;
   fields: Question[];
+};
+
+export type ResponseValue = { fieldId: number; val: string };
+export type QuestionableResponse = {
+  formId: number;
+  userId?: number;
+  submittedAt?: string;
+  values: ResponseValue[];
+};
+
+export const exampleSchema: QuestionableSchema = {
+  userId: 0,
+  title: 'Form',
+  fields: [],
 };

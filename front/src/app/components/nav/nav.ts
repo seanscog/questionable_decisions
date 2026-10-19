@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { UserService } from '../../services/user'
+import { UserService } from '../../services/user';
 
 interface Link {
   path: string;
@@ -13,7 +13,17 @@ interface Link {
   styleUrl: './nav.css',
 })
 export class Nav {
-  userService = inject(UserService)
+  userService = inject(UserService);
   user = this.userService.user;
-  links:Link[] = [{display: "Home", path:"/"}, {display: "About", path:"/about"}, {display: "Admin", path:"/admin"}, {display: "New Form", path: "/form/new"}]
+  displayName = computed<string | undefined>(() =>
+    this.user()?.firstName || this.user()?.lastName
+      ? (this.user()?.firstName ?? '') + ' ' + (this.user()?.lastName ?? '')
+      : this.user()?.username,
+  );
+  links: Link[] = [
+    { display: 'Home', path: '/' },
+    { display: 'About', path: '/about' },
+    { display: 'Admin', path: '/admin' },
+    { display: 'New Form', path: '/form/new' },
+  ];
 }

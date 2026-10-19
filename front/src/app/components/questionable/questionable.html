@@ -1,63 +1,37 @@
-<form [formGroup]="questionable" (ngSubmit)="onSubmit()">
-    @if(editingElement() == "title"){
-    <input type="text" placeholder="Form Title" formControlName="title" (blur)=[editingElement.set(null)] />
-    @if (questionable.get('title')?.invalid && questionable.get('title')?.touched) {
-    <div class="error-message">Name is required.</div>
-    }
-    } @else {
-    <h2>{{questionable.controls.title.value}}
-        <button type="button" (click)="editingElement.set('title')" title="edit">✏️</button>
-    </h2>
-    }
+<form [formArray]="form" (ngSubmit)="onSubmit()">
+    <h2>{{schema().title}}</h2>
 
-    <div class="form-group">
-        <span>({{questions.controls.length}}) Questions</span>
-        <div formArrayName="questions">
-            @for(question of questions.controls;track question){
-            <div [formGroupName]="$index">
-                @if(editingElement() === $index){
-                <div (focusout)="onFocusout($event)">
-                    <select placeholder="Form Title" formControlName="controlType">
-                        <option value="none">display</option>
-                        <option value="text">text</option>
-                        <option value="number">number</option>
-                        <option value="bullets">bullets</option>
-                    </select>
-                    <label>
-                        <input type="text" formControlName="label" />
-                    </label>
-                    @switch(question.get('controlType')!.value){
-                    @case('none') {}
-                    @case('text') {
-                    <input type="text" disabled />
-                    }
-                    <!-- @default never; -->
-                    }
-                    @if (question.get('controlType')?.invalid && question.get('controlType')?.touched) {
-                    <div class="error-message">Name is required.</div>
-                    }
-                </div>
-                } @else {
-                <!-- Render preview -->
-                <label>{{question.get('label')!.value}}
-                    @switch(question.get('controlType')!.value){
-                    @case('none') {}
-                    @case('text') {
-                    <input type="text" disabled />
-                    }
-                    <!-- @default never; -->
-                    }
-                    <button type="button" (click)="editingElement.set($index)" title="edit">✏️</button>
+    <div class="questions">
+        @for (question of schema().fields; track question.id; let i = $index) {
+        <div class="question-field">
+            <label [for]="'question-' + question.id">{{ question.label }}</label>
+
+            @switch (question.controlType) {
+            @case ('text') {
+            <input [id]="'question-' + question.id" type="text" [formControlName]="''+i"
+                [attr.aria-label]="question.label" />
+            }
+            @case ('radio') {
+            <div class="radio-group" [attr.aria-label]="question.label">
+                @for (option of question.options; track option.id) {
+                <label class="radio-option">
+
+                    <input type="radio" [value]="option.label" [formControlName]="''+i" />
+                    <span>{{ option.label }}</span>
                 </label>
                 }
             </div>
             }
+            @default {
+            <input [id]="'question-' + question.id" type="text" [formControlName]="''+i"
+                [attr.aria-label]="question.label" />
+            }
+            }
         </div>
-        <button type="button" (click)='addQuestion()'>Add Question</button>
+        }
     </div>
 
     <div class="button-group">
-        <button type="submit" [disabled]="(!questionable.valid || questionable.pristine)">Save</button>
-        <button type="button" class="btn-reset" (click)="onDiscard()">Discard</button>
+        <button type="submit" [disabled]="(!form.valid || form.pristine)">Submit</button>
     </div>
 </form>

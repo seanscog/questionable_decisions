@@ -17,30 +17,29 @@
             <div [formGroupName]="$index">
                 @if(editingElement() === $index){
                 <div (focusout)="onFocusout($event)">
-                    <select placeholder="Form Title" formControlName="control_type">
-                        <option value="none">display</option>
-                        <option value="text">text</option>
-                        <option value="number">number</option>
-                        <option value="bullets">bullets</option>
+                    <select placeholder="Form Title" formControlName="controlType">
+                        @for(control_type of controlTypes; track control_type) {
+                        <option value={{control_type}}>{{control_type}}</option>
+                        }
                     </select>
                     <label>
                         <input type="text" formControlName="label" />
                     </label>
-                    @switch(question.get('control_type')!.value){
+                    @switch(question.get('controlType')!.value){
                     @case('none') {}
                     @case('text') {
                     <input type="text" disabled />
                     }
                     <!-- @default never; -->
                     }
-                    @if (question.get('control_type')?.invalid && question.get('contro_tType')?.touched) {
+                    @if (question.get('control_type')?.invalid && question.get('controlType')?.touched) {
                     <div class="error-message">Name is required.</div>
                     }
                 </div>
                 } @else {
                 <!-- Render preview -->
                 <label>{{question.get('label')!.value}}
-                    @switch(question.get('control_type')!.value){
+                    @switch(question.get('controlType')!.value){
                     @case('none') {}
                     @case('text') {
                     <input type="text" disabled />

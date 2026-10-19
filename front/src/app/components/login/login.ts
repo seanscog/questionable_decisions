@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { form, FormRoot, FormField, required, validate } from '@angular/forms/signals';
 import { UserService } from '../../services/user';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +17,9 @@ export class Login {
   }
   userService = inject(UserService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly returnUrl =
+    this.activatedRoute.snapshot.queryParamMap.get('returnUrl') ?? '/profile';
 
   loginModel = signal({
     username: '',
@@ -44,7 +47,7 @@ export class Login {
             return { kind: 'serverError', message: err.message ?? '' };
           }
           if (result.ok) {
-            await this.router.navigate(['profile']);
+            this.router.navigateByUrl(this.returnUrl);
             return;
           }
           return {
@@ -60,6 +63,8 @@ export class Login {
     username: '',
     password: '',
     confirmPassword: '',
+    firstName: '',
+    lastName: '',
   });
   registerForm = form(
     this.registerModel,
@@ -91,12 +96,15 @@ export class Login {
               id: 0,
               username: formData.username,
               password: formData.password,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
             });
           } catch (err: any) {
             console.log(err);
             return { kind: 'serverError', message: err?.message ?? '' };
           }
           if (result.ok) {
+            this.router.navigateByUrl(this.returnUrl);
             await this.router.navigate(['profile']);
             return;
           }

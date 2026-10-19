@@ -1,0 +1,38 @@
+<section class="profile-container">
+    <h2>Profile</h2>
+
+    <div class="profile-details">
+        <p><strong>Username:</strong> {{ user()?.username }}</p>
+        <p><strong>First Name:</strong> {{ user()?.firstName }}</p>
+        <p><strong>Last Name:</strong> {{ user()?.lastName }}</p>
+    </div>
+
+    <div class="profile-forms">
+        <h3>Forms Created</h3>
+
+        @if(createdForms()?.length) {
+        <table class="forms-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <!-- <th>Description</th> -->
+                    <!-- <th>Created</th> -->
+                    <th>Questions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for(form of createdForms(); track form) {
+                <tr>
+                    <td><a [routerLink]="['/form', form.id, 'responses']">{{ form.title }}</a></td>
+                    <!-- <td>{{ form.description }}</td> -->
+                    <!-- <td>{{ form.createdAt | date:'mediumDate' }}</td> -->
+                    <td>{{form.fields.length}}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }@else{
+        <a routerLink="/form/new">Create Your First Form</a>
+        }
+    </div>
+</section>

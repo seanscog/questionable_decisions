@@ -7,8 +7,8 @@ export interface User {
   id: number;
   username: string;
   password?: string;
-  first_name?: string;
-  last_name?: string;
+  firstName?: string;
+  lastName?: string;
 }
 interface RegisterResponse {
   ok: boolean;
@@ -32,11 +32,14 @@ export class UserService {
   }
   async register(user: User): Promise<RegisterResponse> {
     return firstValueFrom(
-      this.http.post<RegisterResponse>(environment.apiUrl + '/user', user).pipe(
+      this.http.post<RegisterResponse>(environment.apiUrl + '/register', user).pipe(
         tap((r) => {
           if (r.ok) this.user.set({ id: r.id!, username: user.username });
         }),
       ),
     );
+  }
+  async getUser(id: number): Promise<User> {
+    return firstValueFrom(this.http.get<User>(environment.apiUrl + '/user/' + id));
   }
 }

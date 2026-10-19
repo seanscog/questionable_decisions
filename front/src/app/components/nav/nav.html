@@ -6,7 +6,7 @@
     }
   </div>
   @if(user()){
-  <span>👤 <a routerLink="/profile" routerLinkActive="link-active">{{user()?.username}}</a></span>
+  <span>👤 <a routerLink="/profile" routerLinkActive="link-active">{{displayName()}}</a></span>
   }@else{
   <a routerLink="/login" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}">Log in</a>
   }

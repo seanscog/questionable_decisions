@@ -2,7 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment.production';
 import { firstValueFrom, tap } from 'rxjs';
-import { QuestionableSchema } from '../questionable-schema';
+import type {
+  QuestionableResponse,
+  QuestionableSchema,
+  ResponseValue,
+} from '../questionable-schema';
 import { UserService } from './user';
 
 interface PostResponse {
@@ -21,17 +25,25 @@ export class QuestionableService {
       environment.apiUrl + '/user/' + this.userService.user()?.id + '/forms',
     );
   }
-  async getQuestionable(formId: string): Promise<QuestionableSchema> {
+  async getQuestionable(formId: number): Promise<QuestionableSchema> {
     return firstValueFrom(
       this.http.get<QuestionableSchema>(environment.apiUrl + '/form/' + formId),
     );
   }
   async postQuestionableSchema(schema: QuestionableSchema): Promise<PostResponse> {
-    return firstValueFrom(this.http.put<PostResponse>(environment.apiUrl + '/form', schema));
+    schema.userId = this.userService.user()?.id ?? 0;
+    console.log(schema);
+    return firstValueFrom(this.http.post<PostResponse>(environment.apiUrl + '/form', schema));
   }
-  async postResponse(formId: string, res: any): Promise<PostResponse> {
+  async submitResponse(formId: number, values: ResponseValue[]): Promise<PostResponse> {
+    console.log({ formId, userId: this.userService.user() ?? null, values });
     return firstValueFrom(
-      this.http.post<PostResponse>(environment.apiUrl + '/response/' + formId, res),
+      this.http.post<PostResponse>(environment.apiUrl + '/response', { formId, values }),
+    );
+  }
+  async getResponses(formId: number) {
+    return firstValueFrom(
+      this.http.get<QuestionableResponse[]>(environment.apiUrl + '/form/' + formId + '/responses'),
     );
   }
 }

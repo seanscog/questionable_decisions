@@ -7,6 +7,7 @@ import { FormEdit } from './components/form-edit/form-edit';
 import { Questionable, schemaResolver } from './components/questionable/questionable';
 import { Profile } from './components/profile/profile';
 import { authGuard } from './guards/auth-guard';
+import { Responses, responsesResolver } from './components/responses/responses';
 
 export const routes: Routes = [
   {
@@ -34,6 +35,7 @@ export const routes: Routes = [
     path: 'form/new',
     pathMatch: 'full',
     component: FormEdit,
+    canActivate: [authGuard],
   },
   {
     path: 'form/:id',
@@ -41,6 +43,15 @@ export const routes: Routes = [
     component: Questionable,
     resolve: {
       schema: schemaResolver,
+    },
+  },
+  {
+    path: 'form/:id/responses',
+    pathMatch: 'full',
+    component: Responses,
+    resolve: {
+      schema: schemaResolver,
+      responses: responsesResolver,
     },
   },
   {

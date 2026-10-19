@@ -28,8 +28,8 @@ public class Router {
                 .GET("/form/{id}", accept(MediaType.APPLICATION_JSON), formHandler::getForm)
                 .POST("/form", contentType(MediaType.APPLICATION_JSON), formHandler::addForm)
                 .GET("/user/{id}/forms", accept(MediaType.APPLICATION_JSON), formHandler::getFormsByUserId)
-                .POST("/response", accept(MediaType.APPLICATION_JSON), responseHandler::submitResponse)
-                .GET("/form/{id}/responses", contentType(MediaType.APPLICATION_JSON), responseHandler::getResponses)
+                .POST("/response", contentType(MediaType.APPLICATION_JSON), responseHandler::submitResponse)
+                .GET("/form/{id}/responses", accept(MediaType.APPLICATION_JSON), responseHandler::getResponses)
             ).build();
     }
 //     @Bean
