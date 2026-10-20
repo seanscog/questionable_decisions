@@ -5,3 +5,19 @@ button[title="edit"]{
 button[title="edit"]:hover{
     background-color: #888888;
 }
+
+label.rendered-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}

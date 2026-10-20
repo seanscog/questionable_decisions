@@ -27,19 +27,24 @@ export class Questionable {
   form: FormArray = this.fb.array([]);
   ngOnInit() {
     console.log(this.schema());
-    this.form = this.fb.array(this.schema().fields.map((f) => this.fb.control(f)));
+    this.form = this.fb.array(this.schema().fields.map((f) => this.fb.control('')));
   }
 
   onSubmit(): void {
     if (this.form.valid) {
       console.log('Questionable Submitted', this.form.value);
-      this.questionableService.submitResponse(
-        this.schema()?.id!,
-        this.schema().fields.map((f, i) => ({
-          fieldId: f.id,
-          val: this.form.value[i],
-        })),
-      );
+      this.questionableService
+        .submitResponse(
+          this.schema()?.id!,
+          this.schema().fields.map((f, i) => ({
+            fieldId: f.id,
+            val: this.form.value[i],
+          })),
+        )
+        .then(() => {
+          this.router.navigate(['/form', this.schema()?.id, 'responses']);
+        });
+      this.form.reset();
     } else {
       this.form.markAllAsTouched();
     }

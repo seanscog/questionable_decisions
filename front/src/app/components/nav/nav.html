@@ -8,6 +8,6 @@
   @if(user()){
   <span>👤 <a routerLink="/profile" routerLinkActive="link-active">{{displayName()}}</a></span>
   }@else{
-  <a routerLink="/login" routerLinkActive="link-active" [routerLinkActiveOptions]="{exact: true}">Log in</a>
+  <a routerLink="/login" routerLinkActive="link-active">Log in</a>
   }
 </nav>

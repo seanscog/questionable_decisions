@@ -3,6 +3,16 @@ form {
   flex-direction: column;
   align-items: flex-start;
 }
+#login-nav {
+  display: flex;
+  margin-bottom: 1rem;
+}
+#login-nav button {
+  border-radius: var(--radius-sm) var(--radius-sm) 0px 0px;
+}
+#login-nav button:disabled{
+  background-color: var(--color-background);
+}
 /* https://angular.dev/guide/forms/signals/validation */
 .error-list {
   color: red;

@@ -5,3 +5,6 @@ small.adendum {
     margin: 0;
     text-indent: 1.5em;
 }
+.example-responses {
+    display:flex;
+}

@@ -1,6 +1,6 @@
 nav {
     display: flex;
-    background: #aaa;
+    background: var(--color-surface);
     justify-content: space-between;
     padding:0.5em;
   }
@@ -10,8 +10,8 @@ nav>.left {
     gap: 1em;
 }
 .link-active {
-  background: #b85050;
-  color: #ffffff;
+  background: var(--color-secondary);
+  color: var(--color-secondary-foreground);
 }
 /* a {
   text-decoration: none;

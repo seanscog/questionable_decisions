@@ -34,7 +34,9 @@ VALUES (1, 'Thumbs');
 
 INSERT INTO form_field (ordinal, display_number, control_type, label, form_page, form_id)
 VALUES
-    (1, 1, 'radio', 'Which is your favorite', 1, 1);
+    (1, 1, 'radio', 'How is everyone feeling?', 1, 1),
+    (2, 2, 'text', 'Whose baby is the cutest?', 1, 1),
+    (3, 3, 'text', 'Are you ready for a party?', 1, 1);
 
 INSERT INTO field_option (ordinal, label, field_id)
 VALUES
@@ -65,3 +67,14 @@ CREATE INDEX idx_response_value_response_id
 
 CREATE INDEX idx_response_value_field_id
     ON response_value(field_id);
+
+CREATE VIEW response_view AS
+SELECT  
+    response.id,
+    response.form_id,
+    COALESCE(response.customer_id, 0) AS customer_id,
+    response.submitted_at,
+    COALESCE(customer.username, 'unknown') AS username
+FROM response
+LEFT JOIN customer
+    ON customer.id = response.customer_id;

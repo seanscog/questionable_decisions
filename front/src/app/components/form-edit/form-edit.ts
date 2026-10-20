@@ -1,5 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { QuestionableService } from '../../services/questionable';
 import { controlTypes, Question, QuestionableSchema } from '../../questionable-schema';
@@ -32,11 +38,11 @@ export class FormEdit {
     if (this.questionable.valid) {
       let num = 0;
       let value = this.questionable.getRawValue();
+      let questions = this.questions.getRawValue() as Question[];
       const schema: QuestionableSchema = {
         userId: 0,
         title: value.title ?? 'You Forgot to Provide a Title Idiot',
-        fields: value.questions!.map((_q: any, i): Question => {
-          const q = _q as Question;
+        fields: questions.map((q: any, i): Question => {
           return {
             id: 0,
             ordinal: i,
@@ -44,11 +50,10 @@ export class FormEdit {
             controlType: q.controlType,
             label: q.label,
             formPage: 0,
-            options: _q.options?.value ?? [],
+            options: q?.options ?? [],
           };
         }),
       };
-      console.log(schema);
 
       this.questionableService.postQuestionableSchema(schema).then(() => {
         this.router.navigate(['profile']);
@@ -60,6 +65,19 @@ export class FormEdit {
   get questions(): FormArray {
     return this.questionable.get('questions') as FormArray;
   }
+  getOptions(question: AbstractControl): FormArray {
+    return question.get('options') as FormArray;
+  }
+  removeOption(options: FormArray, index: number) {
+    return options.removeAt(index);
+  }
+  addOption(options: FormArray) {
+    options.push(
+      this.fb.group({
+        label: [`Option ${options.length}`],
+      }),
+    );
+  }
 
   onDiscard(): void {
     this.questionable.reset();
@@ -68,9 +86,9 @@ export class FormEdit {
   addQuestion() {
     this.questions.push(
       this.fb.group({
-        controlType: ['none', Validators.required],
+        controlType: ['display', Validators.required],
         label: [`Question ${this.questions.length}`, Validators.required],
-        options: [this.fb.array([])],
+        options: this.fb.array([]),
       }),
     );
     this.questionable.markAsTouched();

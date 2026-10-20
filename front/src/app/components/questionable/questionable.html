@@ -1,21 +1,25 @@
 <form [formArray]="form" (ngSubmit)="onSubmit()">
     <h2>{{schema().title}}</h2>
 
-    <div class="questions">
+    <div class="form-questions">
         @for (question of schema().fields; track question.id; let i = $index) {
-        <div class="question-field">
+        <div class="question-field card">
             <label [for]="'question-' + question.id">{{ question.label }}</label>
 
             @switch (question.controlType) {
+            @case ('display') {}
             @case ('text') {
             <input [id]="'question-' + question.id" type="text" [formControlName]="''+i"
+                [attr.aria-label]="question.label" />
+            }
+            @case ('number') {
+            <input [id]="'question-' + question.id" type="number" [formControlName]="''+i"
                 [attr.aria-label]="question.label" />
             }
             @case ('radio') {
             <div class="radio-group" [attr.aria-label]="question.label">
                 @for (option of question.options; track option.id) {
                 <label class="radio-option">
-
                     <input type="radio" [value]="option.label" [formControlName]="''+i" />
                     <span>{{ option.label }}</span>
                 </label>

@@ -12,23 +12,35 @@
 
     <div class="form-group">
         <span>({{questions.controls.length}}) Questions</span>
-        <div formArrayName="questions">
+        <div formArrayName="questions" class="form-questions">
             @for(question of questions.controls;track question){
-            <div [formGroupName]="$index">
+            <div class="question-field card" [formGroupName]="$index">
                 @if(editingElement() === $index){
-                <div (focusout)="onFocusout($event)">
+                <div (focusout)="onFocusout($event)" class="edit-group">
                     <select placeholder="Form Title" formControlName="controlType">
                         @for(control_type of controlTypes; track control_type) {
                         <option value={{control_type}}>{{control_type}}</option>
                         }
                     </select>
-                    <label>
+                    <label>Label:
                         <input type="text" formControlName="label" />
                     </label>
                     @switch(question.get('controlType')!.value){
-                    @case('none') {}
-                    @case('text') {
-                    <input type="text" disabled />
+                    @case('display') {}
+                    @case('text') {}
+                    @case('number') {}
+                    @case('radio') {
+                    <div class="column" formArrayName="options">
+                        @let options = getOptions(question);
+                        @for(option of options!.controls; track option) {
+                        <span [formGroupName]="$index">
+                            <input type="text" formControlName="label" />
+                            <button type="button" class="non-intrusive" (click)="removeOption(options, $index)"
+                                title="remove option">❌</button>
+                        </span>
+                        }
+                    </div>
+                    <button type="button" (click)="addOption(options)">Add option</button>
                     }
                     <!-- @default never; -->
                     }
@@ -38,22 +50,38 @@
                 </div>
                 } @else {
                 <!-- Render preview -->
-                <label>{{question.get('label')!.value}}
-                    @switch(question.get('controlType')!.value){
-                    @case('none') {}
-                    @case('text') {
-                    <input type="text" disabled />
-                    }
-                    <!-- @default never; -->
-                    }
+                <div class="row">
+                    <label class="rendered-control">{{question.get('label')!.value}}
+                        @switch(question.get('controlType')!.value){
+                        @case('display') {}
+                        @case('text') {
+                        <input type="text" />
+                        }
+                        @case('number') {
+                        <input type="number" />
+                        }
+                        @case('radio') {
+                        @for(option of getOptions(question).controls; track option) {
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="$index" />
+                                <span>{{ option.get('label')?.value }}</span>
+                            </label>
+                        </div>
+                        }
+                        }
+                        <!-- @default never; -->
+                        }
+                    </label>
                     <button type="button" (click)="editingElement.set($index)" title="edit">✏️</button>
-                </label>
+                </div>
                 }
             </div>
             }
         </div>
         <button type="button" (click)='addQuestion()'>Add Question</button>
     </div>
+    <br />
 
     <div class="button-group">
         <button type="submit" [disabled]="(!questionable.valid || questionable.pristine)">Save</button>
